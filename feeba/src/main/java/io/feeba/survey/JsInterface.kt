@@ -19,7 +19,7 @@ class JsInterface(
     private val appHistoryState: AppHistoryState,
     private val onSurveyFullyRendered: () -> Unit,
     private val onSurveyEndCallback: (cta: CallToAction) -> Unit,
-    private val onResize: (height: Int) -> Unit
+    private val onResize: (width: Int, height: Int) -> Unit
 ) {
     private val jsonInstance = ServiceLocator.jsonInstance
 
@@ -61,8 +61,8 @@ class JsInterface(
     }
 
     @JavascriptInterface
-    fun resize(height: Int) {
-        Logger.log(LogLevel.DEBUG, "JsInterface::resize, height=$height")
-        onResize(height)
+    fun resize(width: Int, height: Int) {
+        Logger.log(LogLevel.DEBUG, "JsInterface::resize, width=$width, height=$height")
+        onResize(width, height)
     }
 }

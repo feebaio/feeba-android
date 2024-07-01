@@ -10,7 +10,7 @@ import io.feeba.lifecycle.AndroidLifecycleManager
 import io.feeba.lifecycle.GenericAppLifecycle
 import io.feeba.lifecycle.LogLevel
 import io.feeba.lifecycle.Logger
-import io.feeba.ui.FloatingView
+import io.feeba.ui.FloatingViewController
 import io.feeba.ui.SurveyWebViewHolder
 import io.feeba.ui.ViewUtils
 
@@ -20,7 +20,7 @@ internal class SurveyViewController(
     private val appState: AppHistoryState,
     private var viewLifecycleListener: SurveyViewLifecycleListener,
 ) {
-    private var floatingView: FloatingView? = null
+    private var floatingViewController: FloatingViewController? = null
 
     internal interface SurveyViewLifecycleListener {
         fun onSurveyWasShown()
@@ -55,15 +55,15 @@ internal class SurveyViewController(
         Utils.runOnMainUIThread {
             val currentActivity = (lifecycle as AndroidLifecycleManager).curActivity ?: return@runOnMainUIThread
             if (ruleSet.startWithKnob != null) {
-                floatingView = FloatingView(
+                floatingViewController = FloatingViewController(
                     context = currentActivity.applicationContext,
                     rootView = currentActivity.window.decorView.rootView as ViewGroup,
                 ) {
-                    floatingView?.dismiss()
+                    floatingViewController?.dismiss()
                     showSurveyUi(currentActivity)
                 }
 
-                floatingView?.show()
+                floatingViewController?.show()
             } else {
                 showSurveyUi(currentActivity)
             }
@@ -91,8 +91,8 @@ internal class SurveyViewController(
 
     fun destroy(callback: Boolean) {
         Logger.log(LogLevel.DEBUG, "SurveyViewController::destroy")
-        floatingView?.dismiss()
-        floatingView = null
+        floatingViewController?.dismiss()
+        floatingViewController = null
 
         surveyView?.dismiss()
         surveyView = null

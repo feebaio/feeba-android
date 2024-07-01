@@ -25,7 +25,7 @@ import sample.project.page.PageType
 import sample.project.prepareLogoutButton
 import sample.utils.PreferenceWrapper
 
-class ShowCaseFragment : Fragment() {
+class  ShowCaseFragment : Fragment() {
 
     private var _binding: FragmentSampleShowcaseBinding? = null
 
@@ -71,7 +71,12 @@ class ShowCaseFragment : Fragment() {
             Handler(Looper.getMainLooper()).post {
                 val adapterData = extractEvents(it)
                 binding.recyclerViewEventTriggers.layoutManager = LinearLayoutManager(context)
-                binding.recyclerViewEventTriggers.adapter = EventsAdapter(adapterData)
+                binding.recyclerViewEventTriggers.adapter = EventsAdapter(adapterData) {
+                    Feeba.triggerEvent(it.event)
+//                    findNavController().navigate(R.id.action_open_test_fragment, Bundle().apply {
+//                        putSerializable("survey", it.surveyPlan.surveyPresentation)
+//                    })
+                }
 
                 val pageTriggers = extractPageTriggers(it)
                 binding.recyclerViewPageTriggers.layoutManager = LinearLayoutManager(context)

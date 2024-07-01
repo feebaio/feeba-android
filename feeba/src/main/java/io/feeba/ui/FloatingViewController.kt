@@ -15,7 +15,7 @@ import io.feeba.lifecycle.LogLevel
 import io.feeba.lifecycle.Logger
 import io.feeba.navigationBarHeight
 
-internal class FloatingView(
+internal class FloatingViewController(
     private val context: Context,
     private val rootView: ViewGroup,
     private val onKnobClick: (() -> Unit)? = null,

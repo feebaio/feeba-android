@@ -17,7 +17,7 @@ data class SurveyPlan(
     val id: String,
     val surveyPresentation: SurveyPresentation,
     val ruleSetList: List<RuleSet>,
-    val distribution: DistributionModel
+    val distribution: DistributionModel? = null
 )
 
 @Serializable
@@ -64,7 +64,7 @@ data class SurveyPresentation(
     val displayDuration: Double,
     val maxWidgetHeightInPercent: Int = 70, // between 0 to 100
     val maxWidgetWidthInPercent: Int = 90, // between 0 to 100
-)
+): java.io.Serializable
 
 @Serializable
 data class HelperKnob(

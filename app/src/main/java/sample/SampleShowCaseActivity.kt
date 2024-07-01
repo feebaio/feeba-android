@@ -2,9 +2,7 @@ package sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import io.least.demo.R
 import io.least.demo.databinding.ActivitySampleShowcaseBinding
-import sample.project.NavHostFragment
 
 class SampleShowCaseActivity : AppCompatActivity() {
     private var _binding: ActivitySampleShowcaseBinding? = null
@@ -17,9 +15,5 @@ class SampleShowCaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivitySampleShowcaseBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainer, NavHostFragment())
-            .commit()
     }
 }

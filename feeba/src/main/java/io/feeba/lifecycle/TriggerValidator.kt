@@ -33,7 +33,7 @@ class TriggerValidator {
                         allConditionsMet = true
                     }
                 }
-                val shouldBeScheduled = areSchedulingConditionsMet(localStateHolder.fetchSurveyShowStats(surveyPlan.id), surveyPlan.distribution.scheduleConfig)
+                val shouldBeScheduled = areSchedulingConditionsMet(localStateHolder.fetchSurveyShowStats(surveyPlan.id), surveyPlan.distribution?.scheduleConfig)
                 Logger.log(LogLevel.DEBUG, "TriggerValidator:: shouldBeScheduled -> $shouldBeScheduled")
                 allConditionsMet = allConditionsMet.and(shouldBeScheduled)
 
@@ -109,7 +109,14 @@ fun validateEvent(triggerCondition: TriggerCondition) {
     }
 }
 
-fun areSchedulingConditionsMet(stat: SurveyShowStats, scheduleConfig: ScheduleConfig): Boolean {
+/**
+ * Schedule can be null in case it was not set ever. It can be caused by legacy data.
+ */
+fun areSchedulingConditionsMet(stat: SurveyShowStats, scheduleConfig: ScheduleConfig?): Boolean {
+    if (scheduleConfig == null) {
+        // Returning false is a safe option in case the data is corrupted or not set. In worst case scenario, the survey will not be shown. Product owner can always update the schedule config.
+        return false
+    }
     // check if the schedule conditions are met
     // if the show start time is in the past
     val now = Date()

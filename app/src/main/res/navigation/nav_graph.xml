@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:startDestination="@id/fragmentLogin"
-    android:id="@+id/nav_graph">
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragmentLogin">
     <fragment
         android:id="@+id/fragmentLogin"
         android:name="sample.auth.LoginFragment">
         <action
             android:id="@+id/action_open_project_list"
-            app:destination="@id/fragmentProjectList" />
+            app:destination="@id/fragmentProjectList"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/fragmentProjectList"
         android:name="sample.project.project_list.list.ProjectListFragment">
         <action
             android:id="@+id/action_open_showcase"
-            app:destination="@id/fragmentTriggers"
-        />
-
+            app:destination="@id/fragmentTriggers" />
+        <action
+            android:id="@+id/action_logout"
+            app:destination="@id/fragmentLogin"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -25,35 +30,32 @@
         android:name="sample.project.project_list.ShowCaseFragment">
         <action
             android:id="@+id/action_open_delayed_survey_fragment"
-            app:destination="@id/fragmentPageTrigger"
-            app:popUpTo="@+id/fragmentTriggers"
-            app:popUpToInclusive="true"
-            app:restoreState="true"
-            app:popUpToSaveState="true"
-        />
+            app:destination="@id/fragmentPageTrigger" />
 
         <action
             android:id="@+id/openActivityPageTrigger"
-            app:destination="@id/activityPageTrigger"
+            app:destination="@id/activityPageTrigger" />
 
-            />
-<!--        app:popUpTo="@id/fragmentTriggers"-->
-<!--        app:popUpToSaveState="true"-->
-<!--        app:popUpToInclusive="false"-->
+        <action
+            android:id="@+id/action_open_test_fragment"
+            app:destination="@id/fragmentTestFragment" />
+        <action
+            android:id="@+id/action_logout"
+            app:destination="@id/fragmentLogin"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
         android:id="@+id/fragmentPageTrigger"
-        android:name="sample.project.page.bugs.SamplePageTriggerFragment">
-<!--        <action-->
-<!--            android:id="@+id/action_back_to_triggers"-->
-<!--            app:popUpTo="@id/fragmentTriggers"-->
-<!--            app:popUpToInclusive="true" />-->
-    </fragment>
+        android:name="sample.project.page.bugs.SamplePageTriggerFragment"></fragment>
+
+    <fragment
+        android:id="@+id/fragmentTestFragment"
+        android:name="sample.project.test.TestFragment"></fragment>
 
     <activity
         android:id="@+id/activityPageTrigger"
         android:name="sample.project.page.PageTriggerActivity"
-        android:label="Page Trigger" >
-    </activity>
+        android:label="Page Trigger"></activity>
 </navigation>

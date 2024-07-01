@@ -191,10 +191,6 @@ object Utils {
 //        }
 //        return true
 //    }
-
-    val isRunningOnMainThread: Boolean
-        get() = Thread.currentThread() == Looper.getMainLooper().thread
-
     fun runOnMainUIThread(runnable: Runnable) {
         if (Looper.getMainLooper().thread === Thread.currentThread()) runnable.run() else {
             val handler = Handler(Looper.getMainLooper())
@@ -202,49 +198,9 @@ object Utils {
         }
     }
 
-    fun runOnMainThreadDelayed(runnable: Runnable?, delay: Int) {
-        val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed(runnable!!, delay.toLong())
-    }
-
-    fun getTargetSdkVersion(context: Context): Int {
-        val packageName = context.packageName
-        val packageManager = context.packageManager
-        try {
-            val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
-            return applicationInfo.targetSdkVersion
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
-        return Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1
-    }
 
     fun isValidResourceName(name: String?): Boolean {
         return name != null && !name.matches("^[0-9]".toRegex())
-    }
-
-    fun getSoundUri(context: Context, sound: String?): Uri? {
-        val resources = context.resources
-        val packageName = context.packageName
-        var soundId: Int
-        if (isValidResourceName(sound)) {
-            soundId = resources.getIdentifier(sound, "raw", packageName)
-            if (soundId != 0) return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + packageName + "/" + soundId)
-        }
-        soundId = resources.getIdentifier("onesignal_default_sound", "raw", packageName)
-        return if (soundId != 0) Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + packageName + "/" + soundId) else null
-    }
-
-    fun getRootCauseThrowable(subjectThrowable: Throwable): Throwable {
-        var throwable = subjectThrowable
-        while (throwable.cause != null && throwable.cause !== throwable) {
-            throwable = throwable.cause!!
-        }
-        return throwable
-    }
-
-    fun getRootCauseMessage(throwable: Throwable): String? {
-        return getRootCauseThrowable(throwable).message
     }
 }
 
@@ -302,20 +258,28 @@ val Activity.statusBarHeight: Int
             val titleBarHeight = contentViewTop - statusBarHeight
             statusBarHeight
         }
-   }
+    }
 
 fun RuleSet.getSurveyDelaySec(): Long {
     return triggers.filter { it.type == RuleType.SESSION_DURATION }.getOrNull(0)?.value?.toLongOrNull() ?: 0
 }
 
-fun appendQueryParameter(url: String, key: String, value: String): String {
+public fun appendQueryParameter(url: String, keyValues: Array<Pair<String, String>>): String {
     return try {
         val uri = Uri.parse(url)
         val builder = uri.buildUpon()
-        builder.appendQueryParameter(key, value)
+        keyValues.forEach { (key, value) -> builder.appendQueryParameter(key, value) }
         builder.build().toString()
     } catch (e: Exception) {
         Logger.log(LogLevel.ERROR, "Failed to append query parameter to url: $url, ${Log.getStackTraceString(e)}")
         url
     }
+}
+
+fun getSanitizedWidthPercent(width: Int): Int {
+    return if (width in 1..100) width else 90
+}
+
+fun getSanitizedHeightPercent(height: Int): Int {
+    return if (height in 1..100) height else 70
 }

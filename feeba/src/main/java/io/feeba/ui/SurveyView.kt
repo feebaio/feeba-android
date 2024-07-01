@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import io.feeba.FeebaFacade
 import io.feeba.Utils
-import io.feeba.appendQueryParameter
 import io.feeba.lifecycle.LogLevel
 import io.feeba.lifecycle.Logger
 
@@ -29,9 +28,7 @@ class SurveyView : FrameLayout {
 
     //Create a constructor that takes in a context, an attribute set and a style
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+        context, attrs, defStyleAttr
     ) {
         //Call the init function
         init()
@@ -39,10 +36,7 @@ class SurveyView : FrameLayout {
 
     //Create a constructor that takes in a context, an attribute set, a style and a default style
     constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
+        context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
         //Call the init function
         init()
@@ -50,33 +44,26 @@ class SurveyView : FrameLayout {
 
     //Create a function called init
     private fun init() {
-        webView = createWebViewInstance(context, appHistoryState,
-            onPageLoaded = { webView, loadType ->
-                Logger.log(LogLevel.DEBUG, "SurveyView::   onPageLoaded: $loadType")
-                if (loadType is PageFrame) {
-                    removeAllViews()
-                    addView(webView)
-                } else if (loadType is SurveyRendered) {
-                    // Trigger JS -> Feeba call with document height
-                    webView.loadUrl("javascript:Mobile.resize(document.body.getBoundingClientRect().height)");
-                } else if (loadType is PageResized) {
-                    Logger.log(
-                        LogLevel.DEBUG,
-                        "SurveyView::   heightSize: ${(loadType.heightSize * resources.displayMetrics.density).toInt()}"
-                    )
-                    Utils.runOnMainUIThread {
-                        webView.layoutParams = FrameLayout.LayoutParams(
-                            resources.displayMetrics.widthPixels,
-                            (loadType.heightSize * resources.displayMetrics.density).toInt()
-                        )
-                    }
-                }
-            },
-            onError = {
-                // In case of error, remove the view
+        webView = createWebViewInstanceForManualLoad(context, appHistoryState, onPageLoaded = { webView, loadType ->
+            Logger.log(LogLevel.DEBUG, "SurveyView::   onPageLoaded: $loadType")
+            if (loadType is PageFrame) {
                 removeAllViews()
+                addView(webView)
+            } else if (loadType is SurveyRendered) {
+                // Trigger JS -> Feeba call with document height
+//                    webView.loadUrl("javascript:Mobile.resize(document.body.getBoundingClientRect().height)");
+            } else if (loadType is PageResized) {
+                val updatedWidth = (loadType.w * resources.displayMetrics.density).toInt()
+                val updatedHeight = (loadType.h * resources.displayMetrics.density).toInt()
+                Logger.d("SurveyView:: w=$updatedWidth, h=${updatedHeight}")
+                Utils.runOnMainUIThread {
+                    webView.layoutParams = FrameLayout.LayoutParams(updatedHeight, updatedWidth)
+                }
             }
-        )
+        }, onError = {
+            // In case of error, remove the view
+            removeAllViews()
+        })
         isFocusableInTouchMode = true
         requestFocus()
     }
@@ -92,13 +79,6 @@ class SurveyView : FrameLayout {
         webView.evaluateJavascript("window.onInlineViewClosed();", null)
     }
 
-    fun loadSurvey(surveyUrl: String) {
-        webView.loadUrl(
-            appendQueryParameter(
-                surveyUrl,
-                "lang",
-                appHistoryState.userData?.langCode ?: "en"
-            )
-        )
-    }
+    fun loadSurvey(surveyUrl: String) = webView.load(surveyUrl, appHistoryState, IntegrationMode.Inline)
+
 }

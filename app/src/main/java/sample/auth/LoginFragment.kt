@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import io.least.demo.R
 import io.least.demo.databinding.FragmentLoginBinding
@@ -48,6 +49,8 @@ class LoginFragment : Fragment() {
         super.onResume()
         viewModel.loginStatus.observe(viewLifecycleOwner) {
             if (it == LoginStatus.SUCCESS) {
+                val nav = NavHostFragment.findNavController(this)
+                nav.graph
                 findNavController().navigate(R.id.action_open_project_list)
             } else if (it == LoginStatus.ON_AIR) {
                 binding.buttonLogin.isEnabled = false
