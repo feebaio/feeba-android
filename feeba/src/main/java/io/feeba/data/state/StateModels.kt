@@ -33,7 +33,7 @@ object Defaults {
             email = "",
             phoneNumber = "",
             tags = mutableMapOf(),
-            langCode = "en",
+            langCode = null, // Intentionally left NULL, so if not set for whatever reason, the default language dictated by backend will be selected
         ),
     )
 }

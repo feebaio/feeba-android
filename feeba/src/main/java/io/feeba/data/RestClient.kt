@@ -18,7 +18,7 @@ class RestClient() {
         Logger.log(LogLevel.DEBUG, "RestClient::fetchSurveyPlans....")
         return try {
             val response = sendPostRequest(
-                "/v1/survey/sdk/list",
+                "/v2/survey/sdk/list",
                 ServiceLocator.jsonInstance.encodeToString(state.userData)
             )
             if (response == "") {

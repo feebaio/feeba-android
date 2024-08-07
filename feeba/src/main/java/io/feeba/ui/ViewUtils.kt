@@ -27,6 +27,7 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import io.feeba.Utils
+import io.feeba.appendQueryParameter
 import io.feeba.data.Position
 import io.feeba.data.SurveyPresentation
 import io.feeba.data.state.AppHistoryState
@@ -215,6 +216,7 @@ fun createWebViewInstance(
         getSanitizedWidthPercent(presentation.maxWidgetWidthInPercent), getSanitizedHeightPercent(presentation.maxWidgetHeightInPercent),
         wrapType, wrapType
     ).apply {
+        // Pass the URL as it is, FeebaWebView will append query params when needed.
         load(presentation.surveyWebAppUrl, appHistoryState, integrationMode)
     }
 }

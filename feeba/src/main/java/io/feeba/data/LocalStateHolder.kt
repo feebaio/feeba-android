@@ -113,10 +113,11 @@ class LocalStateHolder(
         tags: Map<String, String>? = null,
     ) {
         readAppHistoryState().apply {
+
             val updatedUserData: UserData = userData?.copy(
                 phoneNumber = phoneNumber ?: userData?.phoneNumber,
                 email = email ?: userData?.email,
-                langCode = language ?: userData?.langCode,
+                langCode = language ?: userData?.langCode, // this line either uses the new language or the existing one
                 tags = (userData?.tags ?: mutableMapOf()).apply { putAll(tags ?: mutableMapOf()) }
             ) ?: UserData(
                 userId = "empty",

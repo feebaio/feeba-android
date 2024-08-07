@@ -111,7 +111,7 @@ object FeebaFacade {
                     LogLevel.ERROR,
                     "This function expects a ISO 639-1 code. e.g. 'en' for English. Ignoring the call."
                 )
-                return
+                // We won't early terminate the call flow if lang code is not valid
             }
             localStateHolder.updateUserData(language = language)
         }
